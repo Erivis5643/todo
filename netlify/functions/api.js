@@ -11,6 +11,7 @@ const res = (c, b) => ({ statusCode: c, headers: { 'content-type': 'application/
 const txt = a => (a || []).map(t => t.plain_text).join('');
 const today = () => new Date().toLocaleDateString('sv', { timeZone: process.env.TZ_NAME || 'Europe/Vienna' });
 const add = (s, n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dim = d => new Date(Date.UTC(+d.slice(0, 4), +d.slice(5, 7), 0)).getUTCDate();
 const diff = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
 
 const toTask = p => {
@@ -62,7 +63,7 @@ async function sync(tasks) {
     const s0 = T.start || T.created;
     for (let d = add(t, -6); d <= t; d = add(d, 1)) {
       if (d < s0 || have.has(T.id + d)) continue;
-      const hit = T.repeat === 'daily' || (T.repeat === 'weekly' && diff(s0, d) % 7 === 0) || (T.repeat === 'monthly' && d.slice(8) === s0.slice(8));
+      const hit = T.repeat === 'daily' || (T.repeat === 'weekly' && diff(s0, d) % 7 === 0) || (T.repeat === 'monthly' && +d.slice(8) === Math.min(+s0.slice(8), dim(d)));
       if (hit) made.push(await create({ name: T.name, category: T.category, importance: T.importance, notes: T.notes, start: d, deadline: add(d, T.span), repeat: 'none', span: 0, series: T.id }));
     }
   }
