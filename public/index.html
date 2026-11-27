@@ -20,11 +20,11 @@ header{position:sticky;top:0;z-index:5;margin:0 -16px;padding:max(env(safe-area-
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 h1{font-size:22px;font-weight:700;letter-spacing:-.025em}
 .btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:8px 15px;font:inherit;font-weight:600;cursor:pointer}
-.chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:11px;line-height:1.25;color:var(--mute)}
-.chart>div:not(.t){cursor:pointer}.mk{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:var(--card);color:var(--blue);font:700 12px/22px ui-sans-serif,system-ui,sans-serif}.mk.no{color:var(--red)}.mk:empty{display:none}
+.chart{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;text-align:center;font-size:11px;line-height:1.25;color:var(--mute)}
+.chart>div{cursor:pointer}.mk{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:var(--card);color:var(--blue);display:grid;place-items:center}.mk.no{color:var(--mute)}.mk:empty{display:none}
 .track{height:50px;margin:0 0 5px;border-radius:9px;background:var(--line);position:relative;overflow:hidden}
 .fill{position:absolute;inset:auto 0 0;height:0;background:var(--mute);transition:height .9s cubic-bezier(.2,.8,.2,1)}
-.t{color:var(--ink)}.t .fill{background:var(--blue)}.t span{color:var(--blue);font-weight:600}
+.t{color:var(--ink)}.t .fill{background:var(--blue)}.sel span{color:var(--blue);font-weight:600}.nx .track{background:none;border:1.5px dashed var(--line)}.nx.sel .track{border-color:var(--blue)}.pre .chk{display:none}
 h2{font-size:13px;font-weight:600;color:var(--mute);margin:26px 2px 6px}
 .list{background:var(--card);border-radius:16px;overflow:hidden}
 .task{display:flex;gap:13px;align-items:flex-start;padding:13px 15px;cursor:pointer;border-top:1px solid var(--line);position:relative}
@@ -61,7 +61,8 @@ input:focus,textarea:focus{border-color:var(--blue)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chips button{border:0;background:var(--bg);color:var(--blue);border-radius:99px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
 .acts{display:flex;gap:10px;margin-top:20px}.acts .btn{flex:1;padding:12px}
 .acts .del{flex:none;background:none;color:var(--red);padding:12px 8px}
-.wk button{border-radius:99px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.grid button{aspect-ratio:1;padding:0;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:50%;font:inherit;font-size:13px;cursor:pointer}.grid .on{background:var(--blue);border-color:var(--blue);color:#fff}dialog h3{font-size:19px;letter-spacing:-.02em}.sum{color:var(--mute);font-size:13px;margin:4px 0 6px}.hrow{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}.ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}.ic.y{background:var(--blue)}.ic.n{background:var(--red)}
+.wk button{border-radius:99px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.grid button{aspect-ratio:1;padding:0;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:50%;font:inherit;font-size:13px;cursor:pointer}.grid .on{background:var(--blue);border-color:var(--blue);color:#fff}dialog h3{font-size:19px;letter-spacing:-.02em}.sum{color:var(--mute);font-size:13px;margin:4px 0 6px}.hrow{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}.ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}.ic.y{background:var(--blue)}.ic.n{background:none;border:1.6px solid var(--mute);color:var(--mute)}
+#cg{display:flex;flex-wrap:wrap;gap:6px}.pill{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:99px;padding:6px 13px;font:inherit;font-size:14px;cursor:pointer}.pill.on{background:var(--blue);border-color:var(--blue);color:#fff}.pill.add{color:var(--blue);border-style:dashed}.pill-in{width:150px;border-radius:99px;padding:6px 13px}
 </style>
 </head>
 <body>
@@ -78,13 +79,12 @@ input:focus,textarea:focus{border-color:var(--blue)}
 <dialog id="dlg">
   <form id="f" autocomplete="off">
     <input id="n" placeholder="What needs to be done?" required>
-    <label>Category</label><input id="c" list="cats" placeholder="Work, Health, Home...">
-    <datalist id="cats"></datalist>
+    <label>Category</label><div id="cg"></div>
     <div class="two">
       <div><label>Starts</label><input type="date" id="st"></div>
       <div><label>Deadline</label><input type="date" id="dl"></div>
     </div>
-    <div class="chips"><button type="button" data-d="7">+1 week</button><button type="button" data-d="14">+2 weeks</button><button type="button" data-d="30">+1 month</button><button type="button" data-d="">No deadline</button></div>
+    <div class="chips"><button type="button" data-t>Today</button><button type="button" data-d="7">+1 week</button><button type="button" data-d="14">+2 weeks</button><button type="button" data-d="30">+1 month</button><button type="button" data-d="">No deadline</button></div>
     <label>Importance</label>
     <div class="seg" id="imp"><button type="button" data-i="1">1</button><button type="button" data-i="2">2</button><button type="button" data-i="3">3</button><button type="button" data-i="4">4</button><button type="button" data-i="5">5</button></div>
     <div id="rw">
@@ -106,13 +106,15 @@ const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const P=s=>{const[a,b,c]=s.split('-');return new Date(a,b-1,c)};
 const add=(s,n)=>{const d=P(s);d.setDate(d.getDate()+n);return iso(d)};
 const diff=(a,b)=>Math.round((P(b)-P(a))/864e5);
-const today=()=>iso(new Date());
+const today=()=>iso(new Date(Date.now()-108e5)); // the day ends at 03:00
 const dm=s=>`${s.slice(8)}.${s.slice(5,7)}.`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const isT=x=>x.repeat!=='none'&&!x.series;
 const dots=n=>`<span class=dots>${[1,2,3,4,5].map(i=>`<i${i<=n?' class=on':''}></i>`).join('')}</span>`;
 function firstOn(s,r,n){if(r==='daily')return s;for(let i=0;i<400;i++){const d=add(s,i);if(r==='weekly'?P(d).getDay()===n:+d.slice(8)===n)return d}return s}
-let DAYS=[],wd=1,md=1;
+let DAYS=[],wd=1,md=1,view=0,cat='',adding=false;
+const ic=d=>`<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const CK=ic('M3.5 8.5l3 3 6-7'),X=ic('M4.5 4.5l7 7M11.5 4.5l-7 7');
 let T=JSON.parse(localStorage.t||'[]'),key=localStorage.k||'',cur=null,imp=3,rep='none';
 
 async function api(m='GET',b,q='',again){
@@ -127,44 +129,46 @@ async function load(){try{T=await api();localStorage.t=JSON.stringify(T);err()}c
 function draw(){
   const t=today(),inst=T.filter(x=>!isT(x));
   // completion chart: a task counts on its deadline day (undated tasks on the day they are finished)
-  const S=[...Array(7)].map((_,i)=>{const d=add(t,i-6),items=[];let n=0,k=0;
+  const S=[...Array(8)].map((_,i)=>{const d=add(t,i-6),items=[];let n=0,k=0;
     inst.forEach(x=>{if((x.deadline||x.completed)!==d)return;const ok=!!x.completed&&(!x.deadline||x.completed<=x.deadline);n+=x.importance;if(ok)k+=x.importance;items.push({x,ok})});
     return{d,items,n,p:n?Math.round(100*k/n):0,full:n>0&&k===n,early:inst.filter(x=>x.completed===d&&x.deadline>d)}});
   DAYS=S;
   const ch=$('#chart');
-  if(!ch.children.length)ch.innerHTML=S.map((_,i)=>`<div data-day=${i}${i==6?' class=t':''}><div class=track><div class=fill></div><em class=mk></em></div><span></span></div>`).join('');
+  if(!ch.children.length)ch.innerHTML=S.map((_,i)=>`<div data-day=${i}${i==6?' class=t':i==7?' class=nx':''}><div class=track><div class=fill></div><em class=mk></em></div><span></span></div>`).join('');
   setTimeout(()=>[...ch.children].forEach((c,i)=>{const s=S[i],m=c.querySelector('.mk');
     c.querySelector('.fill').style.height=s.p+'%';
-    m.textContent=i<6&&s.n?(s.full?'✓':'✕'):'';m.className='mk'+(s.full?'':' no');
+    m.innerHTML=i<6&&s.n?(s.full?CK:X):'';m.className='mk'+(s.full?'':' no');c.classList.toggle('sel',i==6+view);
     c.querySelector('span').textContent=i==6?'Today':P(s.d).toLocaleDateString('en',{weekday:'short'})}),60);
 
   // priority: importance, pushed up as the deadline gets closer
-  const left=x=>x.deadline?diff(t,x.deadline):99;
+  const ref=view?add(t,1):t;
+  const left=x=>x.deadline?diff(ref,x.deadline):99;
   const pr=x=>x.importance*2+(x.deadline?Math.max(0,10-Math.max(left(x),0)):0);
   const sort=a=>a.sort((a,b)=>pr(b)-pr(a)||left(a)-left(b));
   const open=inst.filter(x=>!x.completed);
-  const now=sort(open.filter(x=>!x.start||x.start<=t)),soon=open.filter(x=>x.start>t).sort((a,b)=>a.start<b.start?-1:1);
-  const done=inst.filter(x=>x.completed===t),rules=T.filter(isT);
+  const live=x=>!x.deadline||x.deadline>=ref;
+  const now=sort(open.filter(x=>(!x.start||x.start<=ref)&&live(x))),soon=open.filter(x=>x.start>ref&&live(x)).sort((a,b)=>a.start<b.start?-1:1);
+  const done=view?[]:inst.filter(x=>x.completed===t),rules=T.filter(isT);
 
   const row=(x,tpl)=>{
     const d=x.deadline?diff(t,x.deadline):null,span=x.deadline?diff(x.start||x.created,x.deadline):0;
-    const last=!tpl&&!x.completed&&d===0&&span>=3;
+    const last=!tpl&&!x.completed&&x.deadline===ref&&span>=3;
     let when=tpl?{daily:'Every day',weekly:'Every week',monthly:'Every month'}[x.repeat]+(x.span?`, ${x.span} days to finish`:''):
-      x.start>t?'Starts '+dm(x.start):d===null?'':d<0?`<span class=over>${-d} day${d<-1?'s':''} overdue</span>`:
-      d===0?(last?'Last day':'Due today'):d===1?'Due tomorrow':`Due ${dm(x.deadline)} (${d} days)`;
+      x.start>ref?'Starts '+dm(x.start):d===null?'':
+      d===0?(last?'Last day':'Due today'):d===1?(last?'Last day':'Due tomorrow'):d<0?`Due ${dm(x.deadline)}`:`Due ${dm(x.deadline)} (${d} days)`;
     return`<div class="task${x.completed?' done':''}${last?' last':''}" data-id="${x.id}">`+
-      (tpl?'':'<button class=chk aria-label="Done">✓</button>')+
+      (tpl?'':`<button class=chk aria-label="Done">${CK}</button>`)+
       `<div class=body><div class=nm>${esc(x.name)}</div><div class=meta>${when?`<span class=when>${when}</span>`:''}`+
       (x.category?`<span>${esc(x.category)}</span>`:'')+
       `${dots(x.importance)}</div>`+
       (x.notes?`<div class=note>${esc(x.notes)}</div>`:'')+`</div></div>`;
   };
   const sec=(h,a,tpl)=>a.length?`<h2>${h}</h2><div class=list>${a.map(x=>row(x,tpl)).join('')}</div>`:'';
+  $('#main').className=view?'pre':'';$('h1').textContent=view?'Tomorrow':'Tasks';
   $('#main').innerHTML=(now.length?`<div class=list style="margin-top:8px">${now.map(x=>row(x)).join('')}</div>`:
     `<div class="list empty" style="margin-top:8px">${inst.length||rules.length?'All clear for now.':'No tasks yet. Add your first one.'}</div>`)+
     sec('Coming up',soon)+sec('Done today',done)+
     (rules.length?`<details><summary>Repeating (${rules.length})</summary><div class=list>${rules.map(x=>row(x,1)).join('')}</div></details>`:'');
-  $('#cats').innerHTML=[...new Set(T.map(x=>x.category).filter(Boolean))].map(c=>`<option value="${esc(c)}">`).join('');
 }
 
 async function toggle(id){
@@ -178,7 +182,7 @@ const setMd=n=>{md=n;document.querySelectorAll('#mdg button').forEach(b=>b.class
 $('#mdg').innerHTML=[...Array(31)].map((_,i)=>`<button type=button data-m=${i+1}>${i+1}</button>`).join('');
 function openForm(x){
   cur=x||null;
-  $('#n').value=x?.name||'';$('#c').value=x?.category||'';$('#st').value=x?(x.start||''):today();$('#dl').value=x?.deadline||'';
+  $('#n').value=x?.name||'';cat=x?.category||'';adding=false;renderCats();const sd=view?add(today(),1):today();$('#st').value=x?(x.start||''):sd;$('#dl').value=x?(x.deadline||''):sd;
   $('#sp').value=x?.span??14;$('#nt').value=x?.notes||'';setImp(x?.importance||3);setRep(x?.repeat||'none');
   if(x&&isT(x)&&x.start){setWd(P(x.start).getDay());setMd(+x.start.slice(8))}else{setWd(1);setMd(1)}
   $('#rw').hidden=!!x?.series;$('#del').hidden=!x;$('#dlg').showModal();
@@ -189,9 +193,12 @@ document.addEventListener('click',e=>{
   if(g('[data-i]'))return setImp(+g('[data-i]').dataset.i);
   if(g('[data-r]')){const r=g('[data-r]').dataset.r;setRep(r);return $('#sp').value={none:0,daily:0,weekly:6,monthly:14}[r]}
   if(g('[data-d]')){const v=g('[data-d]').dataset.d;return $('#dl').value=v?add($('#st').value||today(),+v):''}
+  if(g('[data-t]'))return $('#dl').value=today();
+  if(g('[data-cat]')){const c=g('[data-cat]').dataset.cat;cat=cat===c?'':c;return renderCats()}
+  if(g('[data-newcat]')){adding=true;return renderCats()}
   if(g('[data-w]'))return setWd(+g('[data-w]').dataset.w);
   if(g('[data-m]'))return setMd(+g('[data-m]').dataset.m);
-  if(g('[data-day]')){const i=+g('[data-day]').dataset.day;return i<6&&showDay(i)}
+  if(g('[data-day]')){const i=+g('[data-day]').dataset.day;if(i<6)return showDay(i);view=i-6;return draw()}
   if(e.target===$('#day'))return $('#day').close();
   if(e.target===$('#dlg'))return $('#dlg').close();
   const row=g('.task');if(!row)return;
@@ -199,7 +206,7 @@ document.addEventListener('click',e=>{
 });
 $('#f').onsubmit=async e=>{
   e.preventDefault();
-  const o={name:$('#n').value.trim(),category:$('#c').value.trim(),importance:imp,start:rep==='none'?($('#st').value||null):firstOn($('#st').value||today(),rep,rep==='weekly'?wd:md),deadline:$('#dl').value||null,notes:$('#nt').value,repeat:rep,span:+$('#sp').value||0};
+  const o={name:$('#n').value.trim(),category:cat,importance:imp,start:rep==='none'?($('#st').value||null):firstOn($('#st').value||today(),rep,rep==='weekly'?wd:md),deadline:$('#dl').value||null,notes:$('#nt').value,repeat:rep,span:+$('#sp').value||0};
   $('#dlg').close();
   try{
     if(cur){Object.assign(cur,o);draw();await api('PATCH',{id:cur.id,...o})}
@@ -208,8 +215,16 @@ $('#f').onsubmit=async e=>{
   }catch(x){err(x)}
 };
 $('#del').onclick=()=>{if(!confirm('Delete this task?'))return;const id=cur.id;T=T.filter(a=>a.id!==id);$('#dlg').close();draw();api('DELETE',null,'?id='+id).catch(err)};
+function renderCats(){
+  const all=[...new Set([...T.map(x=>x.category),cat].filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  $('#cg').innerHTML=all.map(c=>`<button type=button class="pill${c===cat?' on':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('')+(adding?'<input id=cn class=pill-in placeholder="New category" maxlength=30>':'<button type=button class="pill add" data-newcat>+ New</button>');
+  if(adding)$('#cn').focus();
+}
+function commitCat(){if(!adding)return;adding=false;const v=($('#cn')?.value||'').trim().replace(/,/g,' ');if(v)cat=v;renderCats()}
+document.addEventListener('keydown',e=>{if(e.target.id==='cn'&&e.key==='Enter'){e.preventDefault();commitCat()}});
+document.addEventListener('focusout',e=>{if(e.target.id==='cn')commitCat()});
 function showDay(i){
-  const s=DAYS[i],r=(x,ok)=>`<div class=hrow><span class="ic ${ok?'y':'n'}">${ok?'✓':'✕'}</span><div class=body><div class=nm>${esc(x.name)}</div><div class=meta>${x.completed&&!ok?`<span>Done ${dm(x.completed)}</span>`:''}${x.category?`<span>${esc(x.category)}</span>`:''}${dots(x.importance)}</div></div></div>`;
+  const s=DAYS[i],r=(x,ok)=>`<div class=hrow><span class="ic ${ok?'y':'n'}">${ok?CK:X}</span><div class=body><div class=nm>${esc(x.name)}</div><div class=meta>${x.completed&&!ok?`<span>Done ${dm(x.completed)}</span>`:''}${x.category?`<span>${esc(x.category)}</span>`:''}${dots(x.importance)}</div></div></div>`;
   $('#dayT').textContent=P(s.d).toLocaleDateString('en',{weekday:'long',day:'numeric',month:'long'});
   $('#dayB').innerHTML=(s.items.length?`<p class=sum>${s.items.filter(a=>a.ok).length} of ${s.items.length} done</p>`+s.items.map(a=>r(a.x,a.ok)).join(''):'<p class=sum>Nothing was due.</p>')+(s.early.length?'<h2>Also finished</h2>'+s.early.map(x=>r(x,1)).join(''):'');
   $('#day').showModal();

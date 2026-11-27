@@ -9,7 +9,7 @@ const nf = async (p, m = 'GET', b) => {
 };
 const res = (c, b) => ({ statusCode: c, headers: { 'content-type': 'application/json' }, body: JSON.stringify(b) });
 const txt = a => (a || []).map(t => t.plain_text).join('');
-const today = () => new Date().toLocaleDateString('sv', { timeZone: process.env.TZ_NAME || 'Europe/Vienna' });
+const today = () => new Date(Date.now() - 3 * 36e5).toLocaleDateString('sv', { timeZone: process.env.TZ_NAME || 'Europe/Vienna' });
 const add = (s, n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const dim = d => new Date(Date.UTC(+d.slice(0, 4), +d.slice(5, 7), 0)).getUTCDate();
 const diff = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
