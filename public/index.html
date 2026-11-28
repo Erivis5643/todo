@@ -63,6 +63,17 @@ input:focus,textarea:focus{border-color:var(--blue)}
 .acts .del{flex:none;background:none;color:var(--red);padding:12px 8px}
 .wk button{border-radius:99px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.grid button{aspect-ratio:1;padding:0;border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:50%;font:inherit;font-size:13px;cursor:pointer}.grid .on{background:var(--blue);border-color:var(--blue);color:#fff}dialog h3{font-size:19px;letter-spacing:-.02em}.sum{color:var(--mute);font-size:13px;margin:4px 0 6px}.hrow{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}.ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;color:#fff;margin-top:1px}.ic.y{background:var(--blue)}.ic.n{background:none;border:1.6px solid var(--mute);color:var(--mute)}
 #cg{display:flex;flex-wrap:wrap;gap:6px}.pill{border:1px solid var(--line);background:var(--bg);color:inherit;border-radius:99px;padding:6px 13px;font:inherit;font-size:14px;cursor:pointer}.pill.on{background:var(--blue);border-color:var(--blue);color:#fff}.pill.add{color:var(--blue);border-style:dashed}.pill-in{width:150px;border-radius:99px;padding:6px 13px}
+#tabs{position:sticky;top:var(--hh,0px);z-index:4;display:flex;align-items:center;gap:4px;margin:0 -16px;padding:0 12px 0 16px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.tl{position:relative;flex:1;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}.tl::-webkit-scrollbar{display:none}
+.tl button{flex:none;background:none;border:0;color:var(--mute);font:inherit;font-size:14px;font-weight:560;padding:12px 10px;cursor:pointer;white-space:nowrap;transition:color .2s}
+.tl button.on{color:var(--ink)}.tl i{font-style:normal;font-size:11px;font-weight:650;margin-left:5px;opacity:.7}.tl .on i{color:var(--blue);opacity:1}
+.ind{position:absolute;left:0;bottom:0;height:2px;width:0;border-radius:2px;background:var(--blue);transition:transform .38s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.2,.8,.2,1)}
+.vb{flex:none;width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:10px;background:none;color:var(--mute);cursor:pointer;transition:.15s}.vb:hover,.vb.open{background:var(--line);color:var(--ink)}
+.vm{position:absolute;top:calc(100% + 6px);right:12px;width:236px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:0 14px 40px #0003;transform-origin:top right;animation:pop .16s ease-out}@keyframes pop{from{opacity:0;transform:scale(.95)}}
+.vm button{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;border-radius:9px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}.vm button:hover{background:var(--bg)}
+.vm svg{flex:none;color:var(--mute)}.vm b{display:block;font-size:14px;font-weight:560}.vm small{display:block;color:var(--mute);font-size:12px}
+.vm .tick{margin-left:auto;color:var(--blue);opacity:0}.vm .on .tick{opacity:1}
+#main>h2:first-child{margin-top:16px}h2 em{font-style:normal;font-weight:650;margin-left:7px;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -72,6 +83,14 @@ input:focus,textarea:focus{border-color:var(--blue)}
     <div class="chart" id="chart"></div>
     <div id="err"></div>
   </header>
+  <nav id="tabs" hidden>
+    <div class="tl" id="tl"><span class="ind" id="ind"></span></div>
+    <button class="vb" id="vb" aria-label="View options"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M6.5 10h7M9 14h2"/></svg></button>
+    <div class="vm" id="vm" hidden>
+      <button data-g="mix"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg><span><b>Mixed</b><small>Everything by priority</small></span><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tick"><path d="M4 10.5l4 4 8-9"/></svg></button>
+      <button data-g="grp"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h7M3 7h7M12 4h5M12 7h5M3 13h14M3 16h14"/></svg><span><b>Grouped</b><small>Split up by category</small></span><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tick"><path d="M4 10.5l4 4 8-9"/></svg></button>
+    </div>
+  </nav>
   <main id="main"></main>
 </div>
 <button class="fab" data-new aria-label="New task">+</button>
@@ -112,7 +131,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const isT=x=>x.repeat!=='none'&&!x.series;
 const dots=n=>`<span class=dots>${[1,2,3,4,5].map(i=>`<i${i<=n?' class=on':''}></i>`).join('')}</span>`;
 function firstOn(s,r,n){if(r==='daily')return s;for(let i=0;i<400;i++){const d=add(s,i);if(r==='weekly'?P(d).getDay()===n:+d.slice(8)===n)return d}return s}
-let DAYS=[],wd=1,md=1,view=0,cat='',adding=false;
+let DAYS=[],wd=1,md=1,view=0,cat='',adding=false,fcat=localStorage.f||'*',mode=localStorage.g||'mix';
 const ic=d=>`<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
 const CK=ic('M3.5 8.5l3 3 6-7'),X=ic('M4.5 4.5l7 7M11.5 4.5l-7 7');
 let T=JSON.parse(localStorage.t||'[]'),key=localStorage.k||'',cur=null,imp=3,rep='none';
@@ -147,9 +166,22 @@ function draw(){
   const sort=a=>a.sort((a,b)=>pr(b)-pr(a)||left(a)-left(b));
   const open=inst.filter(x=>!x.completed);
   const live=x=>!x.deadline||x.deadline>=ref;
-  const now=sort(open.filter(x=>(!x.start||x.start<=ref)&&live(x))),soon=open.filter(x=>x.start>ref&&live(x)).sort((a,b)=>a.start<b.start?-1:1);
-  const done=view?[]:inst.filter(x=>x.completed===t),rules=T.filter(isT);
+  const nowAll=sort(open.filter(x=>(!x.start||x.start<=ref)&&live(x)));
+  const cats=[...new Set(T.map(x=>x.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  if(fcat!=='*'&&(!cats.length||!(fcat==='__other'?nowAll.some(x=>!x.category):cats.includes(fcat))))fcat='*';
+  const inCat=x=>fcat==='*'||(fcat==='__other'?!x.category:x.category===fcat);
+  const now=nowAll.filter(inCat),soon=open.filter(x=>x.start>ref&&live(x)&&inCat(x)).sort((a,b)=>a.start<b.start?-1:1);
+  const grouped=mode==='grp'&&fcat==='*'&&cats.length>0,hc=grouped||fcat!=='*';
+  const done=view?[]:inst.filter(x=>x.completed===t&&inCat(x)),rules=T.filter(x=>isT(x)&&inCat(x));
 
+  const tabs=[['*','All',nowAll.length],...cats.map(c=>[c,c,nowAll.filter(x=>x.category===c).length])];
+  if(cats.length&&nowAll.some(x=>!x.category))tabs.push(['__other','Other',nowAll.filter(x=>!x.category).length]);
+  $('#tabs').hidden=!cats.length;
+  const tl=$('#tl');tl.querySelectorAll('button').forEach(b=>b.remove());
+  $('#ind').insertAdjacentHTML('afterend',tabs.map(([k,l,n])=>`<button data-f="${esc(k)}"${k===fcat?' class=on':''}>${esc(l)}<i>${n}</i></button>`).join(''));
+  document.querySelectorAll('#vm [data-g]').forEach(b=>b.classList.toggle('on',b.dataset.g===mode));
+  document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px');
+  requestAnimationFrame(()=>{const a=tl.querySelector('.on');if(!a)return;$('#ind').style.width=a.offsetWidth+'px';$('#ind').style.transform=`translateX(${a.offsetLeft}px)`;tl.scrollTo({left:a.offsetLeft-(tl.clientWidth-a.offsetWidth)/2,behavior:'smooth'})});
   const row=(x,tpl)=>{
     const d=x.deadline?diff(t,x.deadline):null,span=x.deadline?diff(x.start||x.created,x.deadline):0;
     const last=!tpl&&!x.completed&&x.deadline===ref&&span>=3;
@@ -159,14 +191,15 @@ function draw(){
     return`<div class="task${x.completed?' done':''}${last?' last':''}" data-id="${x.id}">`+
       (tpl?'':`<button class=chk aria-label="Done">${CK}</button>`)+
       `<div class=body><div class=nm>${esc(x.name)}</div><div class=meta>${when?`<span class=when>${when}</span>`:''}`+
-      (x.category?`<span>${esc(x.category)}</span>`:'')+
+      (x.category&&!hc?`<span>${esc(x.category)}</span>`:'')+
       `${dots(x.importance)}</div>`+
       (x.notes?`<div class=note>${esc(x.notes)}</div>`:'')+`</div></div>`;
   };
+  const grp=()=>[...new Set(now.map(x=>x.category))].sort((a,b)=>!a?1:!b?-1:a.localeCompare(b)).map(k=>{const g=now.filter(x=>x.category===k);return`<h2>${esc(k||'Other')}<em>${g.length}</em></h2><div class=list>${g.map(x=>row(x)).join('')}</div>`}).join('');
   const sec=(h,a,tpl)=>a.length?`<h2>${h}</h2><div class=list>${a.map(x=>row(x,tpl)).join('')}</div>`:'';
   $('#main').className=view?'pre':'';$('h1').textContent=view?'Tomorrow':'Tasks';
-  $('#main').innerHTML=(now.length?`<div class=list style="margin-top:8px">${now.map(x=>row(x)).join('')}</div>`:
-    `<div class="list empty" style="margin-top:8px">${inst.length||rules.length?'All clear for now.':'No tasks yet. Add your first one.'}</div>`)+
+  $('#main').innerHTML=(now.length?(grouped?grp():`<div class=list style="margin-top:8px">${now.map(x=>row(x)).join('')}</div>`):
+    `<div class="list empty" style="margin-top:8px">${fcat!=='*'?'Nothing in this category.':T.length?'All clear for now.':'No tasks yet. Add your first one.'}</div>`)+
     sec('Coming up',soon)+sec('Done today',done)+
     (rules.length?`<details><summary>Repeating (${rules.length})</summary><div class=list>${rules.map(x=>row(x,1)).join('')}</div></details>`:'');
 }
@@ -182,13 +215,17 @@ const setMd=n=>{md=n;document.querySelectorAll('#mdg button').forEach(b=>b.class
 $('#mdg').innerHTML=[...Array(31)].map((_,i)=>`<button type=button data-m=${i+1}>${i+1}</button>`).join('');
 function openForm(x){
   cur=x||null;
-  $('#n').value=x?.name||'';cat=x?.category||'';adding=false;renderCats();const sd=view?add(today(),1):today();$('#st').value=x?(x.start||''):sd;$('#dl').value=x?(x.deadline||''):sd;
+  $('#n').value=x?.name||'';cat=x?(x.category||''):(fcat!=='*'&&fcat!=='__other'?fcat:'');adding=false;renderCats();const sd=view?add(today(),1):today();$('#st').value=x?(x.start||''):sd;$('#dl').value=x?(x.deadline||''):sd;
   $('#sp').value=x?.span??14;$('#nt').value=x?.notes||'';setImp(x?.importance||3);setRep(x?.repeat||'none');
   if(x&&isT(x)&&x.start){setWd(P(x.start).getDay());setMd(+x.start.slice(8))}else{setWd(1);setMd(1)}
   $('#rw').hidden=!!x?.series;$('#del').hidden=!x;$('#dlg').showModal();
 }
 document.addEventListener('click',e=>{
-  const g=s=>e.target.closest(s);
+  const g=s=>e.target.closest(s),vm=$('#vm');
+  if(g('#vb')){vm.hidden=!vm.hidden;return $('#vb').classList.toggle('open',!vm.hidden)}
+  if(!vm.hidden&&!g('#vm')){vm.hidden=true;$('#vb').classList.remove('open')}
+  if(g('[data-g]')){mode=g('[data-g]').dataset.g;localStorage.g=mode;vm.hidden=true;$('#vb').classList.remove('open');return draw()}
+  if(g('[data-f]')){fcat=g('[data-f]').dataset.f;localStorage.f=fcat;return draw()}
   if(g('[data-new]'))return openForm();
   if(g('[data-i]'))return setImp(+g('[data-i]').dataset.i);
   if(g('[data-r]')){const r=g('[data-r]').dataset.r;setRep(r);return $('#sp').value={none:0,daily:0,weekly:6,monthly:14}[r]}
@@ -230,6 +267,7 @@ function showDay(i){
   $('#day').showModal();
 }
 $('#dx').onclick=()=>$('#day').close();
+addEventListener('resize',()=>document.documentElement.style.setProperty('--hh',document.querySelector('header').offsetHeight+'px'));
 document.addEventListener('visibilitychange',()=>!document.hidden&&load());
 if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js');
 draw();load();
