@@ -137,7 +137,7 @@ const CK=ic('M3.5 8.5l3 3 6-7'),X=ic('M4.5 4.5l7 7M11.5 4.5l-7 7');
 let T=JSON.parse(localStorage.t||'[]'),key=localStorage.k||'',cur=null,imp=3,rep='none';
 
 async function api(m='GET',b,q='',again){
-  const r=await fetch('/.netlify/functions/api'+q,{method:m,headers:{'x-key':key,'content-type':'application/json'},body:b&&JSON.stringify(b)});
+  const r=await fetch('/api'+q,{method:m,headers:{'x-key':key,'content-type':'application/json'},body:b&&JSON.stringify(b)});
   if(r.status===401){const j=await r.json();if(again||j.error!=='Wrong password')throw Error(j.error);
     key=prompt('Password')||'';if(!key)throw Error('Password needed');localStorage.k=key;return api(m,b,q,1)}
   const j=await r.json();if(!r.ok)throw Error(j.error);return j;
