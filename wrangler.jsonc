@@ -1,0 +1,11 @@
+{
+  "name": "todo",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-16",
+  "keep_vars": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api"]
+  }
+}
